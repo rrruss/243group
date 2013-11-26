@@ -5,7 +5,7 @@ g <- rbind(c(0,2,1,1,1), c(2,4,3,1,1),
 colnames(g) = c('start', 'end', 'intersect', 'm', 'b')
 g
 g = g[sort.list(g[ ,1], ), ]
-x = .8
+x = 1.8
 g[, 'start']
 
 f <- function(x) {
@@ -19,24 +19,21 @@ updateg <- function(x, g, f){
   fnumDer = numericDeriv(quote(log(f(x))), 'x')
   fprime = attr(fnumDer, 'gradient')
   # check if x is to the left or right of the intersection toUpdate
+  # update either the g to the right or left.
   if (x < g[toUpdate, 'intersect']) {
-    # i.e. x is to the left:
-    leftg <- toUpdate - 1
-    # calculate intersections:
-    newRangeLeft <- (fval - g[leftg, 'b'])/(g[leftg, 'm'] - fprime)
+    left <- toUpdate - 1
+    newRangeLeft <- (fval - g[left, 'b'])/(g[left, 'm'] - fprime)
     newRangeRight <- (g[toUpdate, 'b'] - fval)/(fprime - g[toUpdate, 'm'])
-    g[leftg, 'end'] <- newRangeLeft
+    g[otherUpdate, 'end'] <- newRangeLeft
     g[toUpdate, 'start'] <- newRangeRight
     g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, fval))
   }
   if (x > g[toUpdate, 'intersect']) {
-    # i.e. x is to the right:
-    rightg <- toUpdate + 1
-    # calculate intersections:
-    newRangeRight <- (fval - g[rightg, 'b'])/(g[rightg, 'm'] - fprime)
+    right <- toUpdate + 1
+    newRangeRight <- (fval - g[right, 'b'])/(g[right, 'm'] - fprime)
     newRangeLeft <- (g[toUpdate, 'b'] - fval)/(fprime - g[toUpdate, 'm'])
-    g[rightg, 'end'] <- newRangeRight
-    g[toUpdate, 'start'] <- newRangeLeft
+    g[otherUpdate, 'start'] <- newRangeLeft
+    g[toUpdate, 'end'] <- newRangeRight
     g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, fval))
   }
   g <- g[sort.list(g[ ,1], ), ]
