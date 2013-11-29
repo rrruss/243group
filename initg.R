@@ -31,5 +31,6 @@ initG <- function(f, upperB = Inf, lowerB = -Inf) {
   
   #Create g
   g <- matrix(c(lowerB, w, u, uSlope, uVal, w, upperB, v, vSlope, vVal), nrow=2, ncol=5)
-  colnames(g) = c('start', 'end', 'intersect', 'm', 'b') 
+  colnames(g) = c('start', 'end', 'intersect', 'm', 'b')
+  return(g)
 }
