@@ -61,6 +61,12 @@ updateGLower <- function(x, gu, f) {
   glower # note the b column is the value of log(f) at 'start'
 }
 
+checkConcav <- function(fval, g_upperVal){
+  if(fval > g_upperVal) {
+    stop("f is not log-concave; this method will not work.")
+  }
+}
+
 updateG <- function(x, glist, f){
   # Return a list with elements Upper (the upper bound of g in matrix form)
   #   and Lower (the lower bound of g in matrix form)
@@ -71,7 +77,10 @@ updateG <- function(x, glist, f){
   # fx <- f(x)
   # if u < eval(g)/fx { accept x }
   # and maybe pass fx to updateGUpper
+  index_Upper <- which(glist$Upper[ ,'start'] <= x & glist$Upper[ ,'end'] > x)
+  upperX <- glist$Upper[index_Upper, 'm'] * (x - glist$Upper[index_Upper, 'intersect']) + glist$Upper[index_Upper, 'b']
   fval <- f(x)
+  checkConcav((fval, upperX))
   gu <- updateGUpper(x, glist$Upper, f, fval)
   gLower <- updateGLower(x, gu, f)
   return(list(Upper=gu, Lower=gLower, fx=fval))
@@ -91,7 +100,7 @@ glist <- updateG(-1, glist, f)
 glist
 
 x2 <- seq(-6, 6, by=.01)
-plot(x2, log(f(x2)), type='l', ylim=c(-20,20))
+plot(x2, log(f(x2)), type='l', ylim=c(-20,0))
 g <- glist$Upper
 for (i in 1:nrow(g)){
   x1 <- x2[x2 < g[i, 'end'] & x2 > g[i, 'start']]
