@@ -19,7 +19,7 @@ generatePoints <- function(N, glist){
     }
     else{
       glist <- updateG(X[i], glist, f)
-      if (U[i] <- glist$fx / exp(upperX)){
+      if (U[i] < glist$fx / exp(upperX)){
         sampleX <- c(sampleX, X[i])
         break
       }
