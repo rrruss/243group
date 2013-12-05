@@ -8,29 +8,31 @@ initG <- function(f, upperB = Inf, lowerB = -Inf) {
     u <- (2 * lowerB + upperB) / 3
     v <- (2 * upperB + lowerB) / 3
   }
-  
+  #browser()
+  library(numDeriv)
   #Use the fPrime module to evaluate slopes at u and v
-  uSlope <- fPrime(u)
-  vSlope <- fPrime(v)
+  logf <- function(x) { log(f(x)) }
+  uSlope <- grad(logf, x=u)
+  vSlope <- grad(logf, x=v)
   
   #If f'(u) <= 0, slide u towards lowerB until f'(u) > 0
-  while(uslope <= 0) {
+  while(uSlope <= 0) {
     u <- (2 * u + max(3*u, lowerB)) / 3
-    uSlope <- fPrime(u)
+    uSlope <- grad(f, x=u)
   }
   #If f'(v) >= 0, slide v towards upperB until f'(v) < 0
-  while(vslope >= 0) {
+  while(vSlope >= 0) {
     v <- (2 * v + min(3*v, upperB)) / 3
-    vSlope <- fPrime(v)
+    vSlope <- grad(f, x=v)
   }
-  uVal <- fVal(u)
-  vVal <- fVal(v)
+  uVal <- f(u)
+  vVal <- f(v)
   
   #Find the intersection point of the tangent lines
-  w <- (logf(v) - logf(u) - v*vSlope + u*uSlope)/(uSlope - vSlope)
+  w <- (log(f(v)) - log(f(u)) - v*vSlope + u*uSlope)/(uSlope - vSlope)
   
   #Create g
-  g <- matrix(c(lowerB, w, u, uSlope, uVal, w, upperB, v, vSlope, vVal), nrow=2, ncol=5)
+  g <- rbind(c(lowerB, w, u, uSlope, uVal), c(w, upperB, v, vSlope, vVal))
   colnames(g) = c('start', 'end', 'intersect', 'm', 'b')
   return(g)
 }
