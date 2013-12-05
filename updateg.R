@@ -80,7 +80,7 @@ updateG <- function(x, glist, f){
   index_Upper <- which(glist$Upper[ ,'start'] <= x & glist$Upper[ ,'end'] > x)
   upperX <- glist$Upper[index_Upper, 'm'] * (x - glist$Upper[index_Upper, 'intersect']) + glist$Upper[index_Upper, 'b']
   fval <- f(x)
-  checkConcav((fval, upperX))
+  checkConcav(fval, upperX)
   gu <- updateGUpper(x, glist$Upper, f, fval)
   gLower <- updateGLower(x, gu, f)
   return(list(Upper=gu, Lower=gLower, fx=fval))
