@@ -34,5 +34,5 @@ initG <- function(f, upperB = Inf, lowerB = -Inf) {
   #Create g
   g <- rbind(c(lowerB, w, u, uSlope, uVal), c(w, upperB, v, vSlope, vVal))
   colnames(g) = c('start', 'end', 'intersect', 'm', 'b')
-  return(g)
+  return(list(Upper=g))
 }
