@@ -90,10 +90,16 @@ glist
 glist <- updateG(-1, glist, f)
 glist
 
-x1 <- seq(-6, 6, .1)
-plot(x1, log(f(x1)), type='l', ylim=c(-20,20))
+x2 <- seq(-6, 6, by=.01)
+plot(x2, log(f(x2)), type='l', ylim=c(-20,20))
 g <- glist$Upper
 for (i in 1:nrow(g)){
-  lines(x1, g[i , 'm']*(x1 - g[i , 'intersect']) + g[i , 'b'])
-  abline(v=g[i, 'end'])
+  x1 <- x2[x2 < g[i, 'end'] & x2 > g[i, 'start']]
+  lines(x1, g[i , 'm']*(x1 - g[i , 'intersect']) + g[i , 'b'], col='red')
+  abline(v=g[i, 'end'], col='blue')
+}
+glow <- glist$Lower
+for (i in 1:nrow(glow)) {
+  x1 <- x2[x2 < glow[i, 'end'] & x2 > glow[i, 'start']]
+  lines(x1, glow[i, 'm']*(x1 - glow[i, 'start']) + glow[i, 'b'], col='green')
 }
