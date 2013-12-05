@@ -71,12 +71,8 @@ updateG <- function(x, glist, f){
   # Return a list with elements Upper (the upper bound of g in matrix form)
   #   and Lower (the lower bound of g in matrix form)
   
-  # TODO: add ability to accept or reject x.
-  # Will add after meeting Thrusday
-  # Something like:
-  # fx <- f(x)
-  # if u < eval(g)/fx { accept x }
-  # and maybe pass fx to updateGUpper
+  # checkConcav fails to reject for f = dnorm(1/x), should maybe
+  # check that start and end values make sense
   index_Upper <- which(glist$Upper[ ,'start'] <= x & glist$Upper[ ,'end'] > x)
   upperX <- glist$Upper[index_Upper, 'm'] * (x - glist$Upper[index_Upper, 'intersect']) + glist$Upper[index_Upper, 'b']
   fval <- f(x)
@@ -88,7 +84,7 @@ updateG <- function(x, glist, f){
 
 # for testing:
 f <- function(x) {
-  dnorm(x)
+  dnorm(1/x)
 }
 
 source('initg.R')
@@ -96,7 +92,7 @@ glist <- initG(f)
 glist
 glist <- updateG(1.5, glist, f)
 glist
-glist <- updateG(-1, glist, f)
+glist <- updateG(-.1, glist, f)
 glist
 
 x2 <- seq(-6, 6, by=.01)
