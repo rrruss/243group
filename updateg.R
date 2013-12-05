@@ -48,8 +48,8 @@ updateGLower <- function(x, gu, f) {
   ###   calculate the equation of the line.
   
   glower <- gu
-  glower[ , 'start'] <- g[ , 'intersect']
-  glower[ , 'end'] <- c(g[-1, 'intersect'], Inf)
+  glower[ , 'start'] <- gu[ , 'intersect']
+  glower[ , 'end'] <- c(gu[-1, 'intersect'], Inf)
   # calculate slope:
   glower[ , 'm'] <- c(diff(glower[ , 'b']), 0)/(glower[ , 'end'] - glower[ , 'start'])
   glower <- glower[-nrow(glower), ] # remove last row - it's meaningless
