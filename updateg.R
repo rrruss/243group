@@ -20,16 +20,21 @@ updateGUpper <- function(x, g, f) {
   # update either the g to the right or left.
   if (x < g[toUpdate, 'intersect']) {
     left <- toUpdate - 1
-    newRangeLeft <- (fval - g[left, 'b'])/(g[left, 'm'] - fprime)
-    newRangeRight <- (g[toUpdate, 'b'] - fval)/(fprime - g[toUpdate, 'm'])
+    gl <- g[left, ]
+    newRangeLeft <- (fval - gl['b'] + 
+                       gl['m']*gl['intersect'] - fprime*x)/(gl['m'] - fprime)
+    newRangeRight <- (g[toUpdate, 'b'] - fval +
+                        fprime*x - g[toUpdate, 'm']*g[toUpdate, 'intersect'])/(fprime - g[toUpdate, 'm'])
     g[left, 'end'] <- newRangeLeft
     g[toUpdate, 'start'] <- newRangeRight
     g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, fval))
   }
   if (x > g[toUpdate, 'intersect']) {
     right <- toUpdate + 1
-    newRangeRight <- (fval - g[right, 'b'])/(g[right, 'm'] - fprime)
-    newRangeLeft <- (g[toUpdate, 'b'] - fval)/(fprime - g[toUpdate, 'm'])
+    newRangeRight <- (fval - g[right, 'b'] + 
+                        g[right, 'm']*g[right, 'intersect'] - fprime*x)/(g[right, 'm'] - fprime)
+    newRangeLeft <- (g[toUpdate, 'b'] - fval + 
+                       fprime*x - g[toUpdate, 'm']*g[toUpdate, 'intersect'])/(fprime - g[toUpdate, 'm'])
     g[right, 'start'] <- newRangeLeft
     g[toUpdate, 'end'] <- newRangeRight
     g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, fval))
@@ -82,5 +87,13 @@ glist <- initG(f)
 glist
 glist <- updateG(1.5, glist, f)
 glist
-glist <- updateG(1, glist, f)
+glist <- updateG(-1, glist, f)
 glist
+
+x1 <- seq(-6, 6, .1)
+plot(x1, log(f(x1)), type='l', ylim=c(-20,20))
+g <- glist$Upper
+for (i in 1:nrow(g)){
+  lines(x1, g[i , 'm']*(x1 - g[i , 'intersect']) + g[i , 'b'])
+  abline(v=g[i, 'end'])
+}

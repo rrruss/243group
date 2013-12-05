@@ -25,8 +25,8 @@ initG <- function(f, upperB = Inf, lowerB = -Inf) {
     v <- (2 * v + min(3*v, upperB)) / 3
     vSlope <- grad(f, x=v)
   }
-  uVal <- f(u)
-  vVal <- f(v)
+  uVal <- log(f(u))
+  vVal <- log(f(v))
   
   #Find the intersection point of the tangent lines
   w <- (log(f(v)) - log(f(u)) - v*vSlope + u*uSlope)/(uSlope - vSlope)
