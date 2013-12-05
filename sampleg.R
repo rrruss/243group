@@ -1,19 +1,39 @@
+# intersectnP <- function(xk,hk,hpx,xlb,xub) {
+#   #this function finds the intersection points of the tangents
+#   #presumes the following vectors of length k:
+#   #xk is a vector of the k abscissae x_i
+#   #hk is a vector of h(x) the k abscissae x_i
+#   #hpx is a vector of h'(x) of the k abscissae x_i
+#   #and two scalar values:
+#   #z_0 = xlb lower bound for domain D
+#   #z_k = xub upper bound for domain D
+#   k <- length(xk)
+#   zk <- rep(NA,k+1)
+#   zk[1] <- xlb
+#   zk[n] <- xub
+#   #TO DO: vectorize the following
+#   for (i in 2:(k-1)) {
+#     zk[i] = xk[i] + (hk[i]-hk[i+1]+hpx[i+1]*(xk[i+1]-xk[i]))/(hpx[i+1]-hpx[i])
+#   }
+#   return(zk)
+# }
+
 sampleSX <- function(g,n) {
   #this function draws n random samples from the exponentiated upper envelope
   #g is a matrix where
   #xk is a vector of the k abscissae x_i
-  #hk is a vector of h(x) the k abscissae x_i
+  #hk is a vector of h(x)=log(f(x)) the k abscissae x_i
   #hpx is a vector of h'(x) of the k abscissae x_i
   #zk is the intersection points of the tangents
-  xk <- g$x
+  xk <- g[,3]
   k <- length(xk)
-  hk <- g$
-  hpk <- (g$slope)*(g$x) + g$intercept
-  zk <- c(g$start,g$end[k]) #note that there are (k+1) z values
+  hk <- g[,5]
+  hpk <- (g[,4])*xk + g[,5]
+  zk <- c(g[,1],g[2,k]) #note that there are (k+1) z values
   
   #calculate the areas of the k chunks (after exponentiating):
 #   areas <- rep(NA,k)
-#   #TO DO: vectorize11111111111111
+#   #TO DO: vectorize
 #   for (i in 1:k) {
 #     areas[i] <- (exp(zk[i+1])-exp(zk[i]))/hpx[i]
 #   }
