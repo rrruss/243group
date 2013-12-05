@@ -16,13 +16,18 @@ f <- function(x) {
 
 source('initg.R')
 g <- initG(f)
+g
+
+updategUpper <- function(x, g, f) {
+  
+}
 
 updateg <- function(x, g, f){
   # find index of the function whose range includes x:
   toUpdate = which(g[ ,'start'] <= x & g[ ,'end'] > x)
   fval = log(f(x))
-  fnumDer = grad(f, x=x)
-  fprime = attr(fnumDer, 'gradient')
+  logf <- function(x) { log(f(x)) }
+  fprime = grad(logf, x=x)
   # check if x is to the left or right of the intersection toUpdate
   # update either the g to the right or left.
   if (x < g[toUpdate, 'intersect']) {
@@ -44,6 +49,9 @@ updateg <- function(x, g, f){
   g <- g[sort.list(g[ ,1], ), ]
   return(g)
 }
-updateg(1.5, g, f)
+g <- updateg(1.5, g, f)
+g
+g <- updateg(1, g, f)
+g
 grad(exp, x=1.5)
 exp(1.5)
