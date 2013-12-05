@@ -1,6 +1,6 @@
 
 library(numDeriv)
-updateGUpper <- function(x, g, f) {
+updateGUpper <- function(x, g, f, fval) {
   ### Return g with an added row with intersect = x
   ### Calculates which other rows of g need updating and updates them
   ### 
@@ -12,7 +12,7 @@ updateGUpper <- function(x, g, f) {
 
   # find index of the function whose range includes x:
   toUpdate <- which(g[ ,'start'] <= x & g[ ,'end'] > x)
-  fval <- log(f(x))
+  logfval <- log(fval)
   logf <- function(x) { log(f(x)) }
   fprime <- grad(logf, x=x)
   
@@ -21,23 +21,23 @@ updateGUpper <- function(x, g, f) {
   if (x < g[toUpdate, 'intersect']) {
     left <- toUpdate - 1
     gl <- g[left, ]
-    newRangeLeft <- (fval - gl['b'] + 
+    newRangeLeft <- (logfval - gl['b'] + 
                        gl['m']*gl['intersect'] - fprime*x)/(gl['m'] - fprime)
-    newRangeRight <- (g[toUpdate, 'b'] - fval +
+    newRangeRight <- (g[toUpdate, 'b'] - logfval +
                         fprime*x - g[toUpdate, 'm']*g[toUpdate, 'intersect'])/(fprime - g[toUpdate, 'm'])
     g[left, 'end'] <- newRangeLeft
     g[toUpdate, 'start'] <- newRangeRight
-    g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, fval))
+    g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, logfval))
   }
   if (x > g[toUpdate, 'intersect']) {
     right <- toUpdate + 1
-    newRangeRight <- (fval - g[right, 'b'] + 
+    newRangeRight <- (logfval - g[right, 'b'] + 
                         g[right, 'm']*g[right, 'intersect'] - fprime*x)/(g[right, 'm'] - fprime)
-    newRangeLeft <- (g[toUpdate, 'b'] - fval + 
+    newRangeLeft <- (g[toUpdate, 'b'] - logfval + 
                        fprime*x - g[toUpdate, 'm']*g[toUpdate, 'intersect'])/(fprime - g[toUpdate, 'm'])
     g[right, 'start'] <- newRangeLeft
     g[toUpdate, 'end'] <- newRangeRight
-    g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, fval))
+    g <- rbind(g, c(newRangeLeft, newRangeRight, x, fprime, logfval))
   }
   g <- g[sort.list(g[ ,1], ), ]
   return(g)
@@ -71,10 +71,10 @@ updateG <- function(x, glist, f){
   # fx <- f(x)
   # if u < eval(g)/fx { accept x }
   # and maybe pass fx to updateGUpper
-  gu <- updateGUpper(x, glist$Upper, f)
+  fval <- f(x)
+  gu <- updateGUpper(x, glist$Upper, f, fval)
   gLower <- updateGLower(x, gu, f)
-
-  return(list(Upper=gu, Lower=gLower))
+  return(list(Upper=gu, Lower=gLower, fx=fval))
 }
 
 # for testing:
