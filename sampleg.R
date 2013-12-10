@@ -28,7 +28,7 @@ sampleSX <- function(g,n) {
   xk <- g[,'intersect']
   k <- length(xk)
   hk <- g[,'b']
-  hpx <- g[,'slope']
+  hpx <- g[,'m']
   zk <- c(g[,'start'],g[k,'end']) #note that there are (k+1) z values
   
   #calculate the areas of the k chunks (after exponentiating):
@@ -69,6 +69,9 @@ sampleSX <- function(g,n) {
     while (u[j] > scum[whichChunk[j]+1])
     whichChunk[j] <- whichChunk[j] + 1
   }
-  sample <- zk[whichChunk] + log(1 + (hpx[whichChunk])*normFactor*(u-scum[whichChunk]) / (exp(huz[whichChunk])) )/hpx[whichChunk]
+  #now for the inverse cdf, broken up into a few pieces for readability
+  piece1 <- (hpx[whichChunk])*normFactor*(u-scum[whichChunk])
+  piece2 <- log(exp(huz[whichChunk]) + piece1) - huz[whichChunk]
+  sample <- zk[whichChunk] + piece2/hpx[whichChunk]
   return(sample)
 }
