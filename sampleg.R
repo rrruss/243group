@@ -73,5 +73,13 @@ sampleSX <- function(g,n) {
   piece1 <- (hpx[whichChunk])*normFactor*(u-scum[whichChunk])
   piece2 <- log(exp(huz[whichChunk]) + piece1) - huz[whichChunk]
   sample <- zk[whichChunk] + piece2/hpx[whichChunk]
+  
+  #correcting the NaN's for samples with the uniform in the first chunk
+  #this is a short for loop for hulls with many components
+  for (m in which(whichChunk==1)) {
+    piece11 <- (hpx[1])*normFactor*(scum[2]-u[m])
+    piece12 <- log(exp(huz[2]) - piece11) - huz[2]
+    sample[m] <- zk[2] + piece12/hpx[1]
+  }
   return(sample)
 }
