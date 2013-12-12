@@ -49,7 +49,7 @@ sampleSX <- function(g,n) {
   #correcting for values of hpx equal to 0
   for (b in hpzero) {
     chunkhpzero <- which(whichChunk==b)
-    sample[chunkhpzero] <- zk[b] + (u[chunkhpzero]-scum[b])*(zk[b+1]-zk[b])
+    sample[chunkhpzero] <- zk[b] + (u[chunkhpzero]-scum[b])*normFactor*(zk[b+1]-zk[b])
   }
   
   return(sample)
