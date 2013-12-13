@@ -1,6 +1,8 @@
 initG <- function(f, upperB = Inf, lowerB = -Inf, initVals) {
   if (!is.null(initVals) & !(all(initVals > lowerB & initVals < upperB))) {
     stop("Initial values specified have to be strictly between the upper and lower bounds specified.")
+  } else if (all.equal(initVals[1],initVals[2])) {
+    stop("Initial values specified cannot be the same value.")
   }
   if (!is.null(initVals)) {
     initVals <- sort(initVals)
